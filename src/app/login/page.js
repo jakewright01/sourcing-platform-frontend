@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '../../lib/supabaseClient'; 
+import { supabase } from '../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -20,7 +20,8 @@ export default function LoginPage() {
     setIsError(false);
 
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
+      // IMPORTANT: Change 'http://localhost:8000/auth/login' to your deployed backend URL
+      const response = await fetch('https://sourcing-platform-api-jake.onrender.com/auth/login', { // <--- VERIFY THIS URL AGAIN
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -34,15 +35,14 @@ export default function LoginPage() {
 
       const { error: sessionError } = await supabase.auth.setSession(sessionData);
       if (sessionError) {
-          throw sessionError;
+        throw sessionError;
       }
-      
+
       setMessage('Login successful! Redirecting...');
       router.push('/dashboard');
 
     } catch (error) {
-      // This is the line that has been fixed
-      setMessage(error.message); 
+      setMessage(error.message);
       setIsError(true);
     } finally {
       setIsSubmitting(false);
@@ -54,7 +54,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
 
         <div className="bg-black border border-zinc-800 rounded-2xl p-8 sm:p-10 space-y-8">
-          
+
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tighter">
               Welcome Back
@@ -70,7 +70,7 @@ export default function LoginPage() {
               <input
                 type="email" id="email" name="email"
                 value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" 
+                className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all"
                 required
               />
             </div>
@@ -79,7 +79,7 @@ export default function LoginPage() {
               <input
                 type="password" id="password" name="password"
                 value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" 
+                className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all"
                 required
               />
             </div>
@@ -93,12 +93,12 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
-          
+
           {message && (<p className={`text-center pt-4 text-sm ${isError ? 'text-red-500' : 'text-green-500'}`}>{message}</p>)}
         </div>
 
         <p className="text-center text-sm text-zinc-500 mt-8">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '} {/* THIS IS THE FIXED LINE */}
           <Link href="/signup" className="font-semibold text-white hover:underline">
             Sign up
           </Link>

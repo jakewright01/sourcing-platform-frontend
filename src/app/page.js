@@ -66,8 +66,8 @@ export default function HomePage() {
               Source Any Item.
             </h1>
             <p className="mt-3 text-zinc-400">
-              Describe what you&apos;re looking for. We&apos;ll handle the rest.
-            </p>
+  Describe what you&apos;re looking for. We&apos;ll handle the rest.
+</p>
           </div>
 
           {/* Form with more generous spacing */}
