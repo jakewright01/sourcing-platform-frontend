@@ -16,12 +16,11 @@ export default function DashboardPage() {
       if (session) {
         setUser(session.user);
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/me/requests`, {
+          const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+          const response = await fetch(`${apiUrl}/me/requests`, {
             headers: { 'Authorization': `Bearer ${session.access_token}` },
           });
-          if (!response.ok) {
-            throw new Error('Failed to fetch sourcing requests.');
-          }
+          if (!response.ok) { throw new Error('Failed to fetch sourcing requests.'); }
           const data = await response.json();
           setRequests(data);
         } catch (fetchError) {

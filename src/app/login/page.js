@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { supabase } from '../../lib/supabaseClient'; 
+import { supabase } from '../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -18,7 +18,8 @@ export default function LoginPage() {
     setMessage('');
     setIsError(false);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
