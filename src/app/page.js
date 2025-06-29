@@ -20,7 +20,7 @@ export default function HomePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsSubmitting(true); 
+    setIsSubmitting(true);
     setStatusMessage('Submitting your request...');
 
     const requestData = {
@@ -30,7 +30,8 @@ export default function HomePage() {
     };
 
     try {
-      const response = await fetch('http://localhost:8000/requests', {
+      // IMPORTANT: Change 'http://localhost:8000/requests' to your deployed backend URL
+      const response = await fetch('https://sourcing-platform-api-jake.onrender.com/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData),
@@ -47,7 +48,7 @@ export default function HomePage() {
     } catch (error) {
       setStatusMessage('Network error. Is the backend server running?');
     } finally {
-      setIsSubmitting(false); 
+      setIsSubmitting(false);
     }
   };
 
@@ -55,17 +56,17 @@ export default function HomePage() {
     // New, more subtle dark background for a premium feel
     <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 bg-zinc-900">
       <div className="w-full max-w-md">
-        
+
         {/* The form container now has more refined styling */}
         <div className="bg-black border border-zinc-800 rounded-2xl p-8 sm:p-10 space-y-8">
-          
+
           {/* Section for the title and description */}
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tighter">
               Source Any Item.
             </h1>
             <p className="mt-3 text-zinc-400">
-              Describe what you're looking for. We'll handle the rest.
+              Describe what you&apos;re looking for. We&apos;ll handle the rest.
             </p>
           </div>
 
@@ -75,27 +76,27 @@ export default function HomePage() {
               <label htmlFor="description" className="block text-sm font-medium mb-2 text-zinc-400">
                 Item Description
               </label>
-              <textarea 
-                id="description" 
-                placeholder="e.g., A vintage Barbour jacket, size medium..." 
-                className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" 
-                value={description} 
-                onChange={(e) => setDescription(e.target.value)} 
+              <textarea
+                id="description"
+                placeholder="e.g., A vintage Barbour jacket, size medium..."
+                className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 rows={4}
-                required 
+                required
               />
             </div>
             <div>
               <label htmlFor="budget" className="block text-sm font-medium mb-2 text-zinc-400">
                 Your Budget (£)
               </label>
-              <input 
-                type="number" 
-                id="budget" 
-                placeholder="150" 
-                className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" 
-                value={budget} 
-                onChange={(e) => setBudget(e.target.value)} 
+              <input
+                type="number"
+                id="budget"
+                placeholder="150"
+                className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
               />
             </div>
             <div>
@@ -108,7 +109,7 @@ export default function HomePage() {
                 {isSubmitting ? 'Submitting...' : 'Submit Sourcing Request'}
               </button>
             </div>
-            
+
             {statusMessage && <p className="text-center text-zinc-400 pt-2">{statusMessage}</p>}
           </form>
         </div>
