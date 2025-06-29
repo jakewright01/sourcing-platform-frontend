@@ -20,8 +20,8 @@ export default function LoginPage() {
     setIsError(false);
 
     try {
-      // IMPORTANT: Change 'http://localhost:8000/auth/login' to your deployed backend URL
-      const response = await fetch('https://sourcing-platform-api-jake.onrender.com/auth/login', { // <--- VERIFY THIS URL AGAIN
+      // IMPORTANT: This must be your CORRECT deployed backend URL
+      const response = await fetch('https://sourcing-platform-api-jake.onrender.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -98,7 +98,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-sm text-zinc-500 mt-8">
-          Don&apos;t have an account?{' '} {/* THIS IS THE FIXED LINE */}
+          Don&apos;t have an account?{' '} {/* CORRECTED LINE 101 */}
           <Link href="/signup" className="font-semibold text-white hover:underline">
             Sign up
           </Link>

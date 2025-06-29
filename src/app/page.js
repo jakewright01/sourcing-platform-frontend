@@ -65,7 +65,7 @@ export default function HomePage() {
             <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tighter">
               Source Any Item.
             </h1>
-            {/* THIS IS THE CRITICAL LINE 68, NOW CORRECTED */}
+            {/* CORRECTED LINE 68 */}
             <p className="mt-3 text-zinc-400">
               Describe what you&apos;re looking for. We&apos;ll handle the rest.
             </p>
