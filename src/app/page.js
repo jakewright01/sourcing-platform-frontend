@@ -30,7 +30,7 @@ export default function HomePage() {
     };
 
     try {
-      // IMPORTANT: Change 'http://localhost:8000/requests' to your deployed backend URL
+      // IMPORTANT: This must be your CORRECT deployed backend URL
       const response = await fetch('https://sourcing-platform-api-jake.onrender.com/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,9 +65,10 @@ export default function HomePage() {
             <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tighter">
               Source Any Item.
             </h1>
+            {/* THIS IS THE CRITICAL LINE 68, NOW CORRECTED */}
             <p className="mt-3 text-zinc-400">
-  Describe what you&apos;re looking for. We&apos;ll handle the rest.
-</p>
+              Describe what you&apos;re looking for. We&apos;ll handle the rest.
+            </p>
           </div>
 
           {/* Form with more generous spacing */}
