@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -63,13 +63,12 @@ function MatchList({ matches }) {
   );
 }
 
-export default function RequestResultsPage({ params }) {
+function RequestResultsContent({ params }) {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const router = useRouter();
-  const resolvedParams = use(params);
-  const requestId = resolvedParams.id;
+  const requestId = params.id;
 
   useEffect(() => {
     if (requestId) {
@@ -184,5 +183,20 @@ export default function RequestResultsPage({ params }) {
         )}
       </div>
     </main>
+  );
+}
+
+export default function RequestResultsPage({ params }) {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </main>
+    }>
+      <RequestResultsContent params={params} />
+    </Suspense>
   );
 }
