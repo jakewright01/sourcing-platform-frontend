@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 export default function ConnectionStatus() {
   const [isOnline, setIsOnline] = useState(true);
   const [apiStatus, setApiStatus] = useState('checking');
+  const [showStatus, setShowStatus] = useState(false);
 
   useEffect(() => {
     // Check if we're in browser environment
@@ -13,10 +14,15 @@ export default function ConnectionStatus() {
     const checkApiStatus = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
         const response = await fetch(`${apiUrl}/health`, { 
           method: 'GET',
-          timeout: 5000 
+          signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
         setApiStatus(response.ok ? 'online' : 'offline');
       } catch (error) {
         setApiStatus('offline');
@@ -44,6 +50,9 @@ export default function ConnectionStatus() {
     // Check API status periodically
     const interval = setInterval(checkApiStatus, 30000); // Check every 30 seconds
 
+    // Show status after initial check
+    setTimeout(() => setShowStatus(true), 2000);
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
@@ -51,19 +60,19 @@ export default function ConnectionStatus() {
     };
   }, []);
 
-  // Don't show anything if everything is working
-  if (isOnline && apiStatus === 'online') return null;
+  // Don't show anything if everything is working or we haven't checked yet
+  if (!showStatus || (isOnline && apiStatus === 'online')) return null;
 
   return (
     <div className="fixed top-16 left-0 right-0 z-40">
-      <div className="bg-yellow-500 text-white px-4 py-2 text-center text-sm">
+      <div className="bg-blue-500 text-white px-4 py-2 text-center text-sm">
         <div className="flex items-center justify-center space-x-2">
           <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span>
             {!isOnline 
-              ? 'You\'re offline - some features may not work' 
+              ? 'You\'re offline - using demo data' 
               : 'Server temporarily unavailable - using demo data'
             }
           </span>

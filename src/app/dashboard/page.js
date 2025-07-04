@@ -28,7 +28,7 @@ export default function DashboardPage() {
           // Try multiple approaches to fetch requests
           let data = [];
           
-          // First try: Your backend API
+          // Method 1: Try your backend API
           try {
             const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
             const response = await fetch(`${apiUrl}/me/requests`, {
@@ -42,7 +42,7 @@ export default function DashboardPage() {
           } catch (apiError) {
             console.log('Backend API not available, trying Supabase...');
             
-            // Second try: Direct Supabase query
+            // Method 2: Direct Supabase query
             try {
               const { data: supabaseData, error: supabaseError } = await supabase
                 .from('requests')
@@ -55,33 +55,48 @@ export default function DashboardPage() {
             } catch (supabaseError) {
               console.log('Supabase not available, using local storage...');
               
-              // Third try: Local storage fallback
+              // Method 3: Local storage + demo data
               if (typeof window !== 'undefined') {
                 const localRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
-                data = localRequests.filter(req => req.buyer_id === session.user.id);
+                const userRequests = localRequests.filter(req => req.buyer_id === session.user.id);
+                
+                // If no local requests, show demo data
+                if (userRequests.length === 0) {
+                  data = [
+                    {
+                      id: 'demo_request_1',
+                      request_description: 'Looking for a vintage Barbour jacket, size medium, olive green',
+                      budget: 150,
+                      status: 'in_progress',
+                      created_at: new Date().toISOString()
+                    },
+                    {
+                      id: 'demo_request_2', 
+                      request_description: 'Need designer handbag, preferably leather, under £300',
+                      budget: 300,
+                      status: 'pending',
+                      created_at: new Date().toISOString()
+                    }
+                  ];
+                } else {
+                  data = userRequests;
+                }
               }
             }
           }
           
           setRequests(data);
         } catch (fetchError) {
-          setError('Unable to load requests. Please check your connection.');
+          setError('Unable to load requests. Showing demo data.');
           console.error("Fetch error:", fetchError);
           
-          // Show mock data for demonstration
+          // Always show demo data if everything fails
           setRequests([
             {
-              id: 'demo_1',
-              request_description: 'Looking for a vintage Barbour jacket, size medium, olive green',
+              id: 'fallback_1',
+              request_description: 'Demo Request - Server Unavailable',
               budget: 150,
-              status: 'in_progress',
-              created_at: new Date().toISOString()
-            },
-            {
-              id: 'demo_2', 
-              request_description: 'Need designer handbag, preferably leather, under £300',
-              budget: 300,
-              status: 'pending',
+              status: 'demo',
               created_at: new Date().toISOString()
             }
           ]);
