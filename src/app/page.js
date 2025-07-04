@@ -232,28 +232,3 @@ export default function HomePage() {
     </main>
   );
 }
-              </h2>
-              <p className="text-xl mb-8 text-blue-100">
-                Join thousands of users who trust SourceMe for their sourcing needs
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/signup"
-                  className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-2xl hover:bg-gray-100 transition-colours"
-                >
-                  Get Started Free
-                </Link>
-                <Link
-                  href="/login"
-                  className="border-2 border-white text-white font-semibold py-3 px-8 rounded-2xl hover:bg-white hover:text-blue-600 transition-colours"
-                >
-                  Sign In
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-    </main>
-  );
-}
