@@ -16,26 +16,26 @@ export const metadata = {
 
 function Navbar() {
   return (
-    <nav className="luxury-glass dark:luxury-glass-dark border-b border-stone-200/30 dark:border-stone-700/30 sticky top-0 z-50">
+    <nav className="navbar-clean dark:navbar-clean-dark sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-18">
+        <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-10 h-10 bg-gradient-luxury-bronze rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                <span className="text-white font-light text-lg">S</span>
+              <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+                <span className="text-white dark:text-black font-medium text-sm">S</span>
               </div>
-              <span className="font-light text-2xl text-luxury-bronze tracking-wide">
+              <span className="font-normal text-xl text-black dark:text-white tracking-tight">
                 SourceMe
               </span>
             </Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-neutral-600 dark:text-neutral-300 hover:text-stone-600 dark:hover:text-stone-400 font-light transition-colors tracking-wide">
+            <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white font-normal transition-colors">
               Home
             </Link>
-            <Link href="/about" className="text-neutral-600 dark:text-neutral-300 hover:text-stone-600 dark:hover:text-stone-400 font-light transition-colors tracking-wide">
-              Experience
+            <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white font-normal transition-colors">
+              How it Works
             </Link>
           </div>
           
@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en-GB" suppressHydrationWarning={true}>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-stone-50 dark:from-black dark:via-neutral-900 dark:to-stone-900">
+        <div className="min-h-screen bg-white dark:bg-gray-900">
           <Navbar />
           {children}
         </div>
