@@ -31,16 +31,28 @@ export default function HomePage() {
     };
 
     try {
-      const response = await apiClient.post('/requests', requestData);
+      try {
+        const response = await apiClient.post('/requests', requestData);
+        setStatusMessage('Success! Your request has been submitted.');
+      } catch (apiError) {
+        console.log('API submission failed, storing locally...');
+        // Store request locally as fallback
+        const localRequests = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
+        localRequests.push({
+          ...requestData,
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          status: 'pending_sync'
+        });
+        localStorage.setItem('pendingRequests', JSON.stringify(localRequests));
+        setStatusMessage('Request saved! We\'ll process it as soon as our servers are available.');
+      }
 
-      setStatusMessage('Success! Your request has been submitted.');
       setDescription('');
       setBudget('');
     } catch (error) {
       console.error('Request submission error:', error);
-      setStatusMessage('Request submitted locally. Our team will process it shortly.');
-      setDescription('');
-      setBudget('');
+      setStatusMessage('Unable to submit request. Please try again later.');
     } finally {
       setIsSubmitting(false); 
     }

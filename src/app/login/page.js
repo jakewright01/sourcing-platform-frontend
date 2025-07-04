@@ -21,7 +21,14 @@ export default function LoginPage() {
     
     try {
       // Try API login first
-      const sessionData = await apiClient.post('/auth/login', { email, password });
+      let sessionData;
+      
+      try {
+        sessionData = await apiClient.post('/auth/login', { email, password });
+      } catch (apiError) {
+        console.log('API login failed, trying Supabase directly...');
+        throw apiError; // This will trigger the Supabase fallback below
+      }
       
       if (sessionData.access_token) {
         const { error: sessionError } = await supabase.auth.setSession(sessionData);
@@ -33,7 +40,7 @@ export default function LoginPage() {
         throw new Error('Invalid login response');
       }
     } catch (error) {
-      console.error('API login failed, trying Supabase:', error);
+      console.log('API login failed, trying Supabase auth...');
       
       // Fallback to Supabase auth
       try {
@@ -48,8 +55,8 @@ export default function LoginPage() {
         router.push('/dashboard');
       } catch (supabaseError) {
         setMessage(supabaseError.message || 'Login failed. Please check your credentials.');
+        setIsError(true);
       }
-      setIsError(true);
     } finally {
       setIsSubmitting(false);
     }

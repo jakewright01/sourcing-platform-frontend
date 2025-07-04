@@ -29,7 +29,7 @@ const nextConfig = {
     return [
       {
         source: '/api/proxy/:path*',
-        destination: 'https://sourcing-platform-api-jake.onrender.com/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sourcing-platform-api-jake.onrender.com'}/:path*`,
       },
     ]
   },
