@@ -1,12 +1,12 @@
 'use client';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../../../../lib/supabaseClient';
 import Link from 'next/link';
 
-function EditListingContent({ params }) {
+export default function EditListingPage({ params }) {
   const router = useRouter();
-  const listingId = params.id;
+  const [listingId, setListingId] = useState(null);
   const [formData, setFormData] = useState({ 
     item_name: '', 
     item_description: '', 
@@ -17,6 +17,13 @@ function EditListingContent({ params }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+
+  // Handle params in useEffect to avoid the workStore error
+  useEffect(() => {
+    if (params?.id) {
+      setListingId(params.id);
+    }
+  }, [params]);
 
   useEffect(() => {
     if (listingId) {
@@ -240,20 +247,5 @@ function EditListingContent({ params }) {
         </div>
       </div>
     </main>
-  );
-}
-
-export default function EditListingPage({ params }) {
-  return (
-    <Suspense fallback={
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
-        </div>
-      </main>
-    }>
-      <EditListingContent params={params} />
-    </Suspense>
   );
 }

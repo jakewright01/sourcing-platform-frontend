@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -63,12 +63,19 @@ function MatchList({ matches }) {
   );
 }
 
-function RequestResultsContent({ params }) {
+export default function RequestResultsPage({ params }) {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [requestId, setRequestId] = useState(null);
   const router = useRouter();
-  const requestId = params.id;
+
+  // Handle params in useEffect to avoid the workStore error
+  useEffect(() => {
+    if (params?.id) {
+      setRequestId(params.id);
+    }
+  }, [params]);
 
   useEffect(() => {
     if (requestId) {
@@ -76,7 +83,8 @@ function RequestResultsContent({ params }) {
         setLoading(true);
         setError('');
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/requests/${requestId}/matches`);
+          const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+          const response = await fetch(`${apiUrl}/requests/${requestId}/matches`);
           if (!response.ok) {
             throw new Error('Failed to fetch matches from the server.');
           }
@@ -141,7 +149,7 @@ function RequestResultsContent({ params }) {
                 Sourcing Results
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
-                Request ID: <span className="font-mono bg-gray-200 dark:bg-slate-700 px-2 py-1 rounded text-sm">{requestId}</span>
+                Request ID: <span className="font-mono bg-gray-200 dark:bg-slate-700 px-2 py-1 rounded text-sm">{requestId || 'Loading...'}</span>
               </p>
             </div>
             
@@ -183,20 +191,5 @@ function RequestResultsContent({ params }) {
         )}
       </div>
     </main>
-  );
-}
-
-export default function RequestResultsPage({ params }) {
-  return (
-    <Suspense fallback={
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
-        </div>
-      </main>
-    }>
-      <RequestResultsContent params={params} />
-    </Suspense>
   );
 }
