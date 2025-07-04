@@ -1,7 +1,6 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
-import NavbarAuth from '../components/NavbarAuth';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -54,7 +53,6 @@ export default function RootLayout({ children }) {
       <body className={`${inter.variable} font-sans antialiased`}>
         <div className="min-h-screen bg-white dark:bg-gray-900">
           <Navbar />
-          {children}
         </div>
       </body>
     </html>
