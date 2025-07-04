@@ -1,5 +1,5 @@
 // Enhanced API client with better error handling and fallbacks
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sourcing-platform-api-jake.onrender.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 class ApiClient {
   constructor() {
@@ -12,11 +12,8 @@ class ApiClient {
     const defaultOptions = {
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
         ...options.headers,
       },
-      mode: 'cors',
-      credentials: 'omit',
     };
 
     const config = {
@@ -32,7 +29,10 @@ class ApiClient {
       const response = await fetch(url, config);
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // For CORS errors, try fallback approach
+        if (response.status === 0 || response.status >= 400) {
+          throw new Error(`API error: ${response.status} - ${response.statusText}`);
+        }
       }
       
       const contentType = response.headers.get('content-type');
@@ -44,13 +44,18 @@ class ApiClient {
     } catch (error) {
       console.error('API request failed:', error);
       
-      // Store request locally if it fails
-      if (typeof window !== 'undefined' && options.method === 'POST') {
+      // For POST requests, store locally and return success
+      if (typeof window !== 'undefined' && (options.method === 'POST' || config.method === 'POST')) {
         this.storeOfflineRequest(endpoint, options);
+        return {
+          success: true,
+          message: 'Request saved locally - will sync when server is available',
+          offline: true
+        };
       }
       
-      // Return mock data for development
-      return this.getMockResponse(endpoint, options.method || 'GET');
+      // For other requests, throw the error
+      throw error;
     }
   }
 
@@ -72,14 +77,6 @@ class ApiClient {
   getMockResponse(endpoint, method) {
     console.log(`Returning mock response for ${method} ${endpoint}`);
     
-    if (endpoint.includes('/auth/login')) {
-      return {
-        access_token: 'mock_token_' + Date.now(),
-        refresh_token: 'mock_refresh_' + Date.now(),
-        user: { id: 'mock_user', email: 'user@example.com' }
-      };
-    }
-    
     if (endpoint.includes('/requests') && method === 'POST') {
       return {
         id: 'mock_request_' + Date.now(),
@@ -89,6 +86,32 @@ class ApiClient {
     }
     
     return { success: true, data: [], message: 'Mock response - API unavailable' };
+  }
+
+  // Sync pending requests when back online
+  async syncPendingRequests() {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      const pendingRequests = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
+      const synced = [];
+      
+      for (const request of pendingRequests) {
+        try {
+          await this.request(request.endpoint, request.options);
+          synced.push(request.id);
+        } catch (error) {
+          console.error('Failed to sync request:', error);
+        }
+      }
+      
+      // Remove synced requests
+      const remaining = pendingRequests.filter(req => !synced.includes(req.id));
+      localStorage.setItem('pendingRequests', JSON.stringify(remaining));
+      
+    } catch (error) {
+      console.error('Error syncing pending requests:', error);
+    }
   }
 
   async get(endpoint, options = {}) {

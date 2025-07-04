@@ -20,13 +20,29 @@ export default function LoginPage() {
     setIsError(false);
     
     try {
-      // Use Supabase auth directly for better reliability
+      // Try Supabase auth first (most reliable)
       const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
-      if (supabaseError) throw supabaseError;
+      if (supabaseError) {
+        // If Supabase fails, try the API as fallback
+        const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Login failed. Please check your credentials.');
+        }
+        
+        const sessionData = await response.json();
+        const { error: sessionError } = await supabase.auth.setSession(sessionData);
+        if (sessionError) throw sessionError;
+      }
       
       setMessage('Login successful! Redirecting...');
       router.push('/dashboard');
