@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function AddListingPage() {
-  const [formData, setFormData] = useState({ item_name: '', item_description: '', price: 0, condition: 'New' });
+  const [formData, setFormData] = useState({ 
+    item_name: '', 
+    item_description: '', 
+    price: 0, 
+    condition: 'New' 
+  });
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,7 +31,10 @@ export default function AddListingPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({...prevData, [name]: name === 'price' ? parseFloat(value) || 0 : value, }));
+    setFormData((prevData) => ({
+      ...prevData, 
+      [name]: name === 'price' ? parseFloat(value) || 0 : value, 
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -34,24 +42,31 @@ export default function AddListingPage() {
     setIsSubmitting(true);
     setMessage('');
     setIsError(false);
+    
     if (!formData.item_name || formData.price <= 0) {
       setMessage('Please fill in at least the item name and a valid price.');
       setIsError(true);
       setIsSubmitting(false);
       return;
     }
+    
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/listings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${session.access_token}` 
+        },
         body: JSON.stringify({ ...formData, source: 'internal' }),
       });
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Failed to add listing');
       }
+      
       const newListing = await response.json();
       setMessage(`Successfully added: ${newListing.item_name}. Add another?`);
       setFormData({ item_name: '', item_description: '', price: 0, condition: 'New' });
@@ -63,9 +78,146 @@ export default function AddListingPage() {
     }
   };
 
-  if (loading) return <main className="flex min-h-screen items-center justify-center bg-zinc-900"><p className="text-white">Authorizing...</p></main>;
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Authorizing...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-8 sm:p-12 bg-zinc-900 text-white"><div className="w-full max-w-2xl"><div className="flex justify-between items-center mb-10"><h1 className="text-4xl font-bold tracking-tighter">Add New Listing</h1><Link href="/admin/listings" className="text-sm text-zinc-400 hover:text-white">← Back to All Listings</Link></div><form onSubmit={handleSubmit} className="bg-black border border-zinc-800 rounded-2xl p-8 space-y-6"><div><label htmlFor="item_name" className="block text-sm font-medium mb-2 text-zinc-300">Item Name*</label><input type="text" id="item_name" name="item_name" value={formData.item_name} onChange={handleChange} className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" required /></div><div><label htmlFor="item_description" className="block text-sm font-medium mb-2 text-zinc-300">Description</label><textarea id="item_description" name="item_description" value={formData.item_description} onChange={handleChange} rows={4} className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" /></div><div><label htmlFor="price" className="block text-sm font-medium mb-2 text-zinc-300">Price* (£)</label><input type="number" id="price" name="price" value={formData.price} onChange={handleChange} step="0.01" className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" required /></div><div><label htmlFor="condition" className="block text-sm font-medium mb-2 text-zinc-300">Condition</label><select id="condition" name="condition" value={formData.condition} onChange={handleChange} className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-white transition-all"><option>New</option><option>Used - Like New</option><option>Used - Good</option><option>Used - Fair</option></select></div><div><button type="submit" disabled={isSubmitting} className="w-full font-semibold py-3 px-4 bg-white text-black rounded-lg hover:bg-zinc-200 transition-all duration-300 disabled:bg-zinc-700 disabled:text-zinc-400 disabled:cursor-not-allowed cursor-pointer">{isSubmitting ? 'Submitting...' : 'Add Listing'}</button></div></form>{message && (<p className={`mt-6 text-center text-sm ${isError ? 'text-red-500' : 'text-green-500'}`}>{message}</p>)}</div></main>
+    <main className="min-h-screen py-8">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center space-x-4 mb-4">
+            <Link
+              href="/admin/listings"
+              className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to All Listings
+            </Link>
+          </div>
+          
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Add New Listing
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Create a new item listing for the sourcing platform
+          </p>
+        </div>
+
+        {/* Form */}
+        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-3xl border border-white/20 dark:border-slate-700/50 p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="item_name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Item Name *
+              </label>
+              <input
+                type="text"
+                id="item_name"
+                name="item_name"
+                value={formData.item_name}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Enter item name"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="item_description" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Description
+              </label>
+              <textarea
+                id="item_description"
+                name="item_description"
+                value={formData.item_description}
+                onChange={handleChange}
+                rows={4}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                placeholder="Describe the item in detail..."
+              />
+            </div>
+
+            <div>
+              <label htmlFor="price" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Price * (£)
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">£</span>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  step="0.01"
+                  className="w-full pl-8 pr-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="condition" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Condition
+              </label>
+              <select
+                id="condition"
+                name="condition"
+                value={formData.condition}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
+                <option>New</option>
+                <option>Used - Like New</option>
+                <option>Used - Good</option>
+                <option>Used - Fair</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Adding Listing...</span>
+                </>
+              ) : (
+                <>
+                  <span>Add Listing</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </>
+              )}
+            </button>
+          </form>
+
+          {message && (
+            <div className={`mt-6 p-4 rounded-2xl text-center font-medium ${
+              isError 
+                ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' 
+                : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+            }`}>
+              {message}
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }

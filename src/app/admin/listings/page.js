@@ -52,10 +52,200 @@ export default function AdminListingsPage() {
     }
   };
 
-  if (loading) return <main className="flex min-h-screen items-center justify-center bg-zinc-900"><p className="text-white">Loading Admin Listings...</p></main>;
-  if (error) return <main className="flex min-h-screen items-center justify-center bg-zinc-900"><p className="text-red-500">{error}</p></main>;
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading admin listings...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-2xl text-center">
+          <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="font-medium">Error</p>
+          <p className="text-sm mt-1">{error}</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-8 sm:p-12 md:p-24 bg-zinc-900 text-white"><div className="w-full max-w-6xl"><div className="flex justify-between items-center mb-10"><h1 className="text-4xl font-bold tracking-tighter">Admin: All Listings</h1><Link href="/admin/add-listing" className="bg-white hover:bg-zinc-200 text-black font-semibold py-2 px-4 rounded-lg transition-colors">+ Add New Listing</Link></div><div className="bg-black border border-zinc-800 rounded-2xl shadow-lg overflow-hidden"><table className="min-w-full"><thead className="bg-zinc-900"><tr><th scope="col" className="py-3 px-6 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">Item Name</th><th scope="col" className="py-3 px-6 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">Price</th><th scope="col" className="py-3 px-6 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">Condition</th><th scope="col" className="relative py-3 px-6"><span className="sr-only">Actions</span></th></tr></thead><tbody className="bg-black divide-y divide-zinc-800">{listings.map((listing) => (<tr key={listing.id} className="hover:bg-zinc-900"><td className="py-4 px-6 whitespace-nowrap font-medium text-white">{listing.item_name}</td><td className="py-4 px-6 whitespace-nowrap text-zinc-300">£{(listing.price || 0).toFixed(2)}</td><td className="py-4 px-6 whitespace-nowrap text-zinc-300">{listing.condition}</td><td className="py-4 px-6 whitespace-nowrap text-right text-sm font-medium space-x-3"><Link href={`/admin/listings/${listing.id}/edit`} className="text-blue-400 hover:text-blue-300">Edit</Link><button onClick={() => handleDelete(listing.id)} className="text-red-500 hover:text-red-400">Delete</button></td></tr>))}</tbody></table></div></div></main>
+    <main className="min-h-screen py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                Admin Dashboard
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                Manage all listings in the system
+              </p>
+            </div>
+            <div className="mt-4 sm:mt-0">
+              <Link
+                href="/admin/add-listing"
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Add New Listing
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-2xl p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="flex items-center">
+              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Listings</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{listings.length}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-2xl p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="flex items-center">
+              <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Value</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  £{listings.reduce((sum, listing) => sum + (listing.price || 0), 0).toFixed(2)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-2xl p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="flex items-center">
+              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">New Condition</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {listings.filter(listing => listing.condition === 'New').length}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Listings Table */}
+        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-2xl border border-white/20 dark:border-slate-700/50 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              All Listings
+            </h2>
+          </div>
+
+          {listings.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                No listings yet
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Start by adding your first listing to the platform.
+              </p>
+              <Link
+                href="/admin/add-listing"
+                className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              >
+                Add First Listing
+              </Link>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-700/50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Item Name
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Price
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Condition
+                    </th>
+                    <th scope="col" className="relative px-6 py-3">
+                      <span className="sr-only">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-slate-800/50 divide-y divide-gray-200 dark:divide-slate-700">
+                  {listings.map((listing) => (
+                    <tr key={listing.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          {listing.item_name}
+                        </div>
+                        {listing.item_description && (
+                          <div className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                            {listing.item_description}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        £{(listing.price || 0).toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
+                          {listing.condition}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end space-x-3">
+                          <Link
+                            href={`/admin/listings/${listing.id}/edit`}
+                            className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(listing.id)}
+                            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }

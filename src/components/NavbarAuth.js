@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 export default function NavbarAuth() {
   const [user, setUser] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,39 +29,96 @@ export default function NavbarAuth() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
-    router.refresh(); 
+    setIsMenuOpen(false);
+    router.push('/');
   };
 
-  // --- NEW LOGIC ---
-  // We check if the logged-in user's ID matches the admin ID from our environment file.
   const isAdmin = user && user.id === process.env.NEXT_PUBLIC_ADMIN_USER_ID;
 
-  // If a user is logged in, show their options
   if (user) {
     return (
-      <div className="flex items-center space-x-3">
-        {/* This link will ONLY show if the logged in user is the admin */}
-        {isAdmin && (
-          <Link href="/admin/listings" className="py-2 px-3 font-medium text-gray-500 rounded hover:bg-gray-100 transition duration-300">
-            Admin
+      <div className="flex items-center space-x-4">
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center space-x-4">
+          {isAdmin && (
+            <Link 
+              href="/admin/listings" 
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+            >
+              Admin
+            </Link>
+          )}
+          <Link 
+            href="/dashboard" 
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+          >
+            Dashboard
           </Link>
-        )}
-        <Link href="/dashboard" className="py-2 px-3 font-medium text-gray-500 rounded hover:bg-gray-100 transition duration-300">
-          Dashboard
-        </Link>
-        <button onClick={handleLogout} className="py-2 px-3 font-medium text-white bg-red-500 rounded hover:bg-red-600 transition duration-300">
-          Log Out
-        </button>
+          <button 
+            onClick={handleLogout} 
+            className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+          >
+            Sign Out
+          </button>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden relative">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          {/* Mobile Dropdown */}
+          {isMenuOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 py-2 z-50">
+              {isAdmin && (
+                <Link 
+                  href="/admin/listings" 
+                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              )}
+              <Link 
+                href="/dashboard" 
+                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <button 
+                onClick={handleLogout} 
+                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-slate-700"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 
-  // If no user is logged in, show the public options
   return (
     <div className="flex items-center space-x-3">
-      <Link href="/login" className="py-2 px-3 font-medium text-gray-500 rounded hover:bg-gray-100 transition duration-300">Log In</Link>
-      <Link href="/signup" className="py-2 px-3 font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition duration-300">Sign Up</Link>
+      <Link 
+        href="/login" 
+        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+      >
+        Sign In
+      </Link>
+      <Link 
+        href="/signup" 
+        className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+      >
+        Get Started
+      </Link>
     </div>
   );
 }

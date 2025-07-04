@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import Link from 'next/link';
 
 export default function HomePage() {
   const [description, setDescription] = useState('');
@@ -8,6 +9,7 @@ export default function HomePage() {
   const [statusMessage, setStatusMessage] = useState('');
   const [user, setUser] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -15,15 +17,18 @@ export default function HomePage() {
     }
     getSession();
   }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true); 
     setStatusMessage('Submitting your request...');
+
     const requestData = {
       buyer_id: user ? user.id : 'anonymous_request',
       request_description: description,
       budget: Number(budget) || 0,
     };
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/requests`, {
@@ -31,6 +36,7 @@ export default function HomePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData),
       });
+
       if (response.ok) {
         setStatusMessage('Success! Your request has been submitted.');
         setDescription('');
@@ -45,7 +51,181 @@ export default function HomePage() {
       setIsSubmitting(false); 
     }
   };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 bg-zinc-900"><div className="w-full max-w-lg"><div className="bg-black border border-zinc-800 rounded-2xl p-8 sm:p-10 space-y-8"><div className="text-center"><h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tighter">Source Any Item.</h1><p className="mt-2 text-zinc-400">Describe what you're looking for and let our AI-powered concierge do the work.</p></div><form onSubmit={handleSubmit} className="space-y-6"><div><label htmlFor="description" className="block text-sm font-medium mb-2 text-zinc-300">Item Description</label><textarea id="description" placeholder="e.g., A vintage Barbour jacket, size medium..." className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} required /></div><div><label htmlFor="budget" className="block text-sm font-medium mb-2 text-zinc-300">Your Budget (£)</label><input type="number" id="budget" placeholder="150" className="w-full p-3 bg-zinc-800 rounded-lg border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white transition-all" value={budget} onChange={(e) => setBudget(e.target.value)} /></div><div><button type="submit" disabled={isSubmitting} className="w-full font-semibold py-3 px-4 bg-white text-black rounded-lg hover:bg-zinc-200 transition-all duration-300 disabled:bg-zinc-700 disabled:text-zinc-400 disabled:cursor-not-allowed cursor-pointer">{isSubmitting ? 'Submitting...' : 'Submit Sourcing Request'}</button></div>{statusMessage && <p className="text-center text-zinc-400 pt-2">{statusMessage}</p>}</form></div></div></main>
+    <main className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium mb-8">
+              <span className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
+              AI-Powered Sourcing Platform
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Source Any Item
+              </span>
+              <br />
+              <span className="text-gray-900 dark:text-white">Effortlessly</span>
+            </h1>
+            
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Describe what you're looking for and let our AI-powered concierge find the perfect match. 
+              From vintage collectibles to everyday essentials, we've got you covered.
+            </p>
+          </div>
+
+          {/* Request Form */}
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 dark:border-slate-700/50 p-8 md:p-12">
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div>
+                  <label htmlFor="description" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                    What are you looking for?
+                  </label>
+                  <textarea
+                    id="description"
+                    placeholder="e.g., A vintage Barbour jacket, size medium, preferably in olive green..."
+                    className="w-full p-4 bg-gray-50 dark:bg-slate-700 rounded-2xl border border-gray-200 dark:border-slate-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={4}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="budget" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                    Your Budget (£)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">£</span>
+                    <input
+                      type="number"
+                      id="budget"
+                      placeholder="150"
+                      className="w-full pl-8 pr-4 py-4 bg-gray-50 dark:bg-slate-700 rounded-2xl border border-gray-200 dark:border-slate-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      value={budget}
+                      onChange={(e) => setBudget(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Submit Sourcing Request</span>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </>
+                  )}
+                </button>
+
+                {statusMessage && (
+                  <div className={`p-4 rounded-2xl text-center font-medium ${
+                    statusMessage.includes('Success') 
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
+                      : statusMessage.includes('Error')
+                      ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                      : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                  }`}>
+                    {statusMessage}
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white/50 dark:bg-slate-800/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              How SourceMe Works
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Our AI-powered platform makes finding anything simple and efficient
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Describe Your Need</h3>
+              <p className="text-gray-600 dark:text-gray-300">Tell us exactly what you're looking for with as much detail as possible</p>
+            </div>
+
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">AI Matching</h3>
+              <p className="text-gray-600 dark:text-gray-300">Our AI analyzes your request and finds the best matches from our network</p>
+            </div>
+
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Get Results</h3>
+              <p className="text-gray-600 dark:text-gray-300">Review curated matches and connect with sellers directly</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      {!user && (
+        <section className="py-20">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Ready to find anything?
+              </h2>
+              <p className="text-xl mb-8 text-blue-100">
+                Join thousands of users who trust SourceMe for their sourcing needs
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href="/signup"
+                  className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-2xl hover:bg-gray-100 transition-colors"
+                >
+                  Get Started Free
+                </Link>
+                <Link
+                  href="/login"
+                  className="border-2 border-white text-white font-semibold py-3 px-8 rounded-2xl hover:bg-white hover:text-blue-600 transition-colors"
+                >
+                  Sign In
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+    </main>
   );
 }
