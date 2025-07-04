@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
+import { apiClient } from '../../lib/apiClient';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -19,25 +20,35 @@ export default function LoginPage() {
     setIsError(false);
     
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      // Try API login first
+      const sessionData = await apiClient.post('/auth/login', { email, password });
       
-      const sessionData = await response.json();
-      if (!response.ok) {
-        throw new Error(sessionData.detail || 'Login failed.');
+      if (sessionData.access_token) {
+        const { error: sessionError } = await supabase.auth.setSession(sessionData);
+        if (sessionError) throw sessionError;
+        
+        setMessage('Login successful! Redirecting...');
+        router.push('/dashboard');
+      } else {
+        throw new Error('Invalid login response');
       }
-      
-      const { error: sessionError } = await supabase.auth.setSession(sessionData);
-      if (sessionError) { throw sessionError; }
-      
-      setMessage('Login successful! Redirecting...');
-      router.push('/dashboard');
     } catch (error) {
-      setMessage(error.message);
+      console.error('API login failed, trying Supabase:', error);
+      
+      // Fallback to Supabase auth
+      try {
+        const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        
+        if (supabaseError) throw supabaseError;
+        
+        setMessage('Login successful! Redirecting...');
+        router.push('/dashboard');
+      } catch (supabaseError) {
+        setMessage(supabaseError.message || 'Login failed. Please check your credentials.');
+      }
       setIsError(true);
     } finally {
       setIsSubmitting(false);
