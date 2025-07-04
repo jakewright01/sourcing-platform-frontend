@@ -7,6 +7,9 @@ export default function OfflineIndicator() {
   const [pendingRequests, setPendingRequests] = useState(0);
 
   useEffect(() => {
+    // Check if we're in browser environment
+    if (typeof window === 'undefined') return;
+
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
@@ -15,8 +18,12 @@ export default function OfflineIndicator() {
 
     // Check for pending requests
     const checkPendingRequests = () => {
-      const pending = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
-      setPendingRequests(pending.length);
+      try {
+        const pending = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
+        setPendingRequests(pending.length);
+      } catch (error) {
+        console.error('Error checking pending requests:', error);
+      }
     };
 
     checkPendingRequests();

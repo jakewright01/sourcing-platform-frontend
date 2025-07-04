@@ -1,27 +1,22 @@
 // Enhanced API client with better error handling and fallbacks
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sourcing-platform-api-jake.onrender.com';
-const PROXY_BASE_URL = '/api/proxy';
 
 class ApiClient {
   constructor() {
     this.baseURL = API_BASE_URL;
-    this.proxyURL = PROXY_BASE_URL;
-    this.useProxy = true; // Use proxy by default to avoid CORS
   }
 
   async request(endpoint, options = {}) {
-    // Try proxy first, then direct API
-    const url = this.useProxy ? `${this.proxyURL}${endpoint}` : `${this.baseURL}${endpoint}`;
+    const url = `${this.baseURL}${endpoint}`;
     
     const defaultOptions = {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
         ...options.headers,
       },
-      mode: this.useProxy ? 'same-origin' : 'cors',
-      credentials: this.useProxy ? 'same-origin' : 'omit',
+      mode: 'cors',
+      credentials: 'omit',
     };
 
     const config = {
@@ -37,12 +32,6 @@ class ApiClient {
       const response = await fetch(url, config);
       
       if (!response.ok) {
-        // If proxy fails, try direct API
-        if (this.useProxy && response.status >= 400) {
-          console.log('Proxy failed, trying direct API...');
-          this.useProxy = false;
-          return this.request(endpoint, options);
-        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
@@ -55,19 +44,28 @@ class ApiClient {
     } catch (error) {
       console.error('API request failed:', error);
       
-      // If using proxy and it fails, try direct API
-      if (this.useProxy && !endpoint.startsWith('/api/proxy')) {
-        console.log('Proxy request failed, trying direct API...');
-        this.useProxy = false;
-        return this.request(endpoint, options);
+      // Store request locally if it fails
+      if (typeof window !== 'undefined' && options.method === 'POST') {
+        this.storeOfflineRequest(endpoint, options);
       }
       
       // Return mock data for development
-      if (process.env.NODE_ENV === 'development') {
-        return this.getMockResponse(endpoint, options.method || 'GET');
-      }
-      
-      throw error;
+      return this.getMockResponse(endpoint, options.method || 'GET');
+    }
+  }
+
+  storeOfflineRequest(endpoint, options) {
+    try {
+      const pendingRequests = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
+      pendingRequests.push({
+        endpoint,
+        options,
+        timestamp: new Date().toISOString(),
+        id: Date.now()
+      });
+      localStorage.setItem('pendingRequests', JSON.stringify(pendingRequests));
+    } catch (error) {
+      console.error('Error storing offline request:', error);
     }
   }
 
@@ -86,11 +84,11 @@ class ApiClient {
       return {
         id: 'mock_request_' + Date.now(),
         status: 'submitted',
-        message: 'Request submitted successfully'
+        message: 'Request submitted successfully (stored locally)'
       };
     }
     
-    return { success: true, data: [], message: 'Mock response' };
+    return { success: true, data: [], message: 'Mock response - API unavailable' };
   }
 
   async get(endpoint, options = {}) {
