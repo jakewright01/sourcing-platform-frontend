@@ -1,18 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #3b82f6;
-  --primary-dark: #2563eb;
-  --secondary: #f1f5f9;
-  --accent: #8b5cf6;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --border: #e2e8f0;
+  --background: #fefefe;
+  --foreground: #1a1a1a;
+  --primary: #000000;
+  --primary-light: #333333;
+  --secondary: #f8f8f8;
+  --accent: #d4af37;
+  --accent-light: #e6c866;
+  --success: #2d5016;
+  --warning: #8b4513;
+  --error: #8b0000;
+  --border: #e8e8e8;
   --card: #ffffff;
-  --muted: #64748b;
+  --muted: #666666;
+  --luxury-gold: #d4af37;
+  --luxury-rose: #e8b4b8;
+  --luxury-charcoal: #2c2c2c;
 }
 
 @theme inline {
@@ -24,31 +28,49 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0f172a;
-    --foreground: #f8fafc;
-    --primary: #3b82f6;
-    --primary-dark: #2563eb;
-    --secondary: #1e293b;
-    --accent: #8b5cf6;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --error: #ef4444;
-    --border: #334155;
-    --card: #1e293b;
-    --muted: #94a3b8;
+    --background: #0a0a0a;
+    --foreground: #f5f5f5;
+    --primary: #ffffff;
+    --primary-light: #cccccc;
+    --secondary: #1a1a1a;
+    --accent: #d4af37;
+    --accent-light: #e6c866;
+    --success: #4a7c59;
+    --warning: #d2691e;
+    --error: #dc143c;
+    --border: #2a2a2a;
+    --card: #151515;
+    --muted: #999999;
+    --luxury-gold: #d4af37;
+    --luxury-rose: #e8b4b8;
+    --luxury-charcoal: #f5f5f5;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
+  font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+}
+
+/* Luxury typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.luxury-heading {
+  font-weight: 200;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -56,96 +78,205 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--muted);
-  border-radius: 3px;
+  background: var(--luxury-gold);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: var(--accent-light);
 }
 
 /* Smooth animations */
 * {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Focus styles */
 .focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900;
+  @apply focus:outline-none focus:ring-1 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black;
 }
 
-/* Glass morphism effect */
-.glass {
-  backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.125);
+/* Luxury glass morphism effect */
+.luxury-glass {
+  backdrop-filter: blur(20px) saturate(180%);
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.glass-dark {
-  backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(30, 41, 59, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.125);
+.luxury-glass-dark {
+  backdrop-filter: blur(20px) saturate(180%);
+  background-color: rgba(21, 21, 21, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* Gradient backgrounds */
-.gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Luxury gradient backgrounds */
+.gradient-luxury {
+  background: linear-gradient(135deg, #000000 0%, #2c2c2c 50%, #000000 100%);
 }
 
-.gradient-secondary {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+.gradient-luxury-gold {
+  background: linear-gradient(135deg, #d4af37 0%, #e6c866 50%, #d4af37 100%);
 }
 
-.gradient-accent {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+.gradient-luxury-rose {
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8b4b8 50%, #f5f5f5 100%);
 }
 
-/* Button hover effects */
-.btn-hover-lift {
+.gradient-luxury-subtle {
+  background: linear-gradient(135deg, #fefefe 0%, #f8f8f8 100%);
+}
+
+/* Luxury button effects */
+.btn-luxury {
+  position: relative;
+  overflow: hidden;
   transform: translateY(0);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
-.btn-hover-lift:hover {
+.btn-luxury::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-luxury:hover::before {
+  left: 100%;
+}
+
+.btn-luxury:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Luxury card effects */
+.card-luxury {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
+}
+
+.card-luxury:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: rgba(212, 175, 55, 0.3);
 }
 
-/* Card hover effects */
-.card-hover {
-  transform: translateY(0);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+.card-luxury-dark {
+  background: linear-gradient(145deg, #151515 0%, #1a1a1a 100%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+.card-luxury-dark:hover {
+  border-color: rgba(212, 175, 55, 0.4);
 }
 
 /* Loading animation */
-@keyframes pulse-slow {
-  0%, 100% {
-    opacity: 1;
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
   }
-  50% {
-    opacity: 0.5;
+  100% {
+    background-position: calc(200px + 100%) 0;
   }
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.animate-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
 }
 
 /* Floating animation */
-@keyframes float {
+@keyframes float-luxury {
   0%, 100% {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-6px);
   }
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+.animate-float-luxury {
+  animation: float-luxury 4s ease-in-out infinite;
+}
+
+/* Luxury text effects */
+.text-luxury-gold {
+  background: linear-gradient(135deg, #d4af37, #e6c866, #d4af37);
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Luxury dividers */
+.luxury-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--luxury-gold), transparent);
+}
+
+/* Premium spacing */
+.luxury-spacing {
+  padding: 2rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .luxury-spacing {
+    padding: 3rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .luxury-spacing {
+    padding: 4rem 3rem;
+  }
+}
+
+/* Luxury form elements */
+.luxury-input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.luxury-input:focus {
+  border-color: var(--luxury-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.luxury-input-dark {
+  background: rgba(21, 21, 21, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Luxury status indicators */
+.status-luxury {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #8b7355;
+}
+
+.status-luxury-dark {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+  color: #d4af37;
 }

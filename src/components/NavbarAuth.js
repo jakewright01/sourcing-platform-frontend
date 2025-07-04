@@ -43,20 +43,20 @@ export default function NavbarAuth() {
           {isAdmin && (
             <Link 
               href="/admin/listings" 
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colours"
+              className="px-4 py-2 text-sm font-light text-neutral-700 dark:text-neutral-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors tracking-wide"
             >
               Admin
             </Link>
           )}
           <Link 
             href="/dashboard" 
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colours"
+            className="px-4 py-2 text-sm font-light text-neutral-700 dark:text-neutral-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors tracking-wide"
           >
             Dashboard
           </Link>
           <button 
             onClick={handleLogout} 
-            className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colours"
+            className="px-4 py-2 text-sm font-light text-white bg-neutral-800 hover:bg-black rounded-lg transition-colors tracking-wide"
           >
             Sign Out
           </button>
@@ -66,7 +66,7 @@ export default function NavbarAuth() {
         <div className="md:hidden relative">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+            className="p-2 text-neutral-700 dark:text-neutral-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -75,11 +75,11 @@ export default function NavbarAuth() {
 
           {/* Mobile Dropdown */}
           {isMenuOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 py-2 z-50">
+            <div className="absolute right-0 mt-2 w-48 luxury-glass dark:luxury-glass-dark rounded-lg shadow-lg py-2 z-50">
               {isAdmin && (
                 <Link 
                   href="/admin/listings" 
-                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                  className="block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 font-light tracking-wide"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Admin
@@ -87,14 +87,14 @@ export default function NavbarAuth() {
               )}
               <Link 
                 href="/dashboard" 
-                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                className="block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 font-light tracking-wide"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Dashboard
               </Link>
               <button 
                 onClick={handleLogout} 
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-slate-700"
+                className="block w-full text-left px-4 py-2 text-sm text-neutral-800 dark:text-neutral-200 hover:bg-amber-50 dark:hover:bg-amber-900/20 font-light tracking-wide"
               >
                 Sign Out
               </button>
@@ -109,15 +109,15 @@ export default function NavbarAuth() {
     <div className="flex items-center space-x-3">
       <Link 
         href="/login" 
-        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colours"
+        className="px-4 py-2 text-sm font-light text-neutral-700 dark:text-neutral-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors tracking-wide"
       >
         Sign In
       </Link>
       <Link 
         href="/signup" 
-        className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+        className="px-5 py-2 text-sm font-light text-white bg-gradient-luxury-gold hover:bg-gradient-to-r hover:from-amber-600 hover:to-yellow-600 rounded-lg transition-all transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl tracking-wide"
       >
-        Get Started
+        Join
       </Link>
     </div>
   );

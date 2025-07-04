@@ -16,26 +16,26 @@ export const metadata = {
 
 function Navbar() {
   return (
-    <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 sticky top-0 z-50">
+    <nav className="luxury-glass dark:luxury-glass-dark border-b border-amber-200/30 dark:border-amber-700/30 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-18">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span className="text-white font-bold text-sm">S</span>
+              <div className="w-10 h-10 bg-gradient-luxury-gold rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                <span className="text-white font-light text-lg">S</span>
               </div>
-              <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="font-light text-2xl text-luxury-gold tracking-wide">
                 SourceMe
               </span>
             </Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colours">
+            <Link href="/" className="text-neutral-600 dark:text-neutral-300 hover:text-amber-600 dark:hover:text-amber-400 font-light transition-colors tracking-wide">
               Home
             </Link>
-            <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colours">
-              How it Works
+            <Link href="/about" className="text-neutral-600 dark:text-neutral-300 hover:text-amber-600 dark:hover:text-amber-400 font-light transition-colors tracking-wide">
+              Experience
             </Link>
           </div>
           
@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en-GB" suppressHydrationWarning={true}>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-stone-50 dark:from-black dark:via-neutral-900 dark:to-stone-900">
           <Navbar />
           {children}
         </div>
