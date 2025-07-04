@@ -2,7 +2,6 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
 import NavbarAuth from '../components/NavbarAuth';
-import OfflineIndicator from '../components/OfflineIndicator';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -56,7 +55,6 @@ export default function RootLayout({ children }) {
         <div className="min-h-screen bg-white dark:bg-gray-900">
           <Navbar />
           {children}
-          <OfflineIndicator />
         </div>
       </body>
     </html>
