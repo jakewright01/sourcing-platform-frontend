@@ -31,43 +31,42 @@ export default function HomePage() {
     };
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-      
-      // Try multiple submission methods
+      // Submit request using reliable methods only
       let success = false;
       
-      // Method 1: Try your backend API
-      try {
-        const response = await fetch(`${apiUrl}/requests`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestData),
-        });
-        
-        if (response.ok) {
+      // Method 1: Try direct Supabase insertion
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from('requests')
+            .insert([{
+              ...requestData,
+              buyer_id: user.id,
+              created_at: new Date().toISOString()
+            }])
+            .select();
+          
+          if (error) throw error;
           success = true;
-        } else {
-          throw new Error('Backend API not available');
+        } catch (supabaseError) {
+          console.log('Supabase failed, using local storage...');
         }
-      } catch (apiError) {
-        console.log('Backend API failed, trying Supabase...');
-        
-        // Method 2: Try direct Supabase insertion
+      }
+      
+      if (!success) {
+        // Method 2: Store locally as fallback
         if (user) {
-          try {
-            const { data, error } = await supabase
-              .from('requests')
-              .insert([{
-                ...requestData,
-                buyer_id: user.id,
-                created_at: new Date().toISOString()
-              }])
-              .select();
-            
-            if (error) throw error;
+          if (typeof window !== 'undefined') {
+            const localRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
+            const newRequest = {
+              ...requestData,
+              id: 'local_' + Date.now(),
+              created_at: new Date().toISOString(),
+              status: 'pending'
+            };
+            localRequests.push(newRequest);
+            localStorage.setItem('userRequests', JSON.stringify(localRequests));
             success = true;
-          } catch (supabaseError) {
-            console.log('Supabase failed, using local storage...');
           }
         }
       }
@@ -77,24 +76,7 @@ export default function HomePage() {
         setDescription('');
         setBudget('');
       } else {
-        // Method 3: Store locally as fallback
-        if (typeof window !== 'undefined') {
-          const localRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
-          const newRequest = {
-            ...requestData,
-            id: 'local_' + Date.now(),
-            created_at: new Date().toISOString(),
-            status: 'pending_sync'
-          };
-          localRequests.push(newRequest);
-          localStorage.setItem('userRequests', JSON.stringify(localRequests));
-          
-          setStatusMessage('Request saved! We\'ll process it as soon as our servers are available.');
-          setDescription('');
-          setBudget('');
-        } else {
-          throw new Error('Unable to submit request');
-        }
+        throw new Error('Unable to submit request');
       }
     } catch (error) {
       console.error('Request submission error:', error);
