@@ -49,6 +49,12 @@ export default function NavbarAuth() {
             </Link>
           )}
           <Link 
+            href="/seller/dashboard" 
+            className="px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+          >
+            Sell
+          </Link>
+          <Link 
             href="/dashboard" 
             className="px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
@@ -85,6 +91,13 @@ export default function NavbarAuth() {
                   Admin
                 </Link>
               )}
+              <Link 
+                href="/seller/dashboard" 
+                className="block px-4 py-2 text-sm text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sell
+              </Link>
               <Link 
                 href="/dashboard" 
                 className="block px-4 py-2 text-sm text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
