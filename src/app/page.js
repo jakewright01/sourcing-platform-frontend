@@ -181,7 +181,7 @@ export default function HomePage() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">AI Matching</h3>
-              <p className="text-gray-600 dark:text-gray-300">Our AI analyzes your request and finds the best matches from our network</p>
+              <p className="text-gray-600 dark:text-gray-300">Our AI analyses your request and finds the best matches from our network</p>
             </div>
 
             <div className="text-center group">
@@ -211,13 +211,13 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/signup"
-                  className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-2xl hover:bg-gray-100 transition-colors"
+                  className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-2xl hover:bg-gray-100 transition-colours"
                 >
                   Get Started Free
                 </Link>
                 <Link
                   href="/login"
-                  className="border-2 border-white text-white font-semibold py-3 px-8 rounded-2xl hover:bg-white hover:text-blue-600 transition-colors"
+                  className="border-2 border-white text-white font-semibold py-3 px-8 rounded-2xl hover:bg-white hover:text-blue-600 transition-colours"
                 >
                   Sign In
                 </Link>
