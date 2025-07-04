@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 export default function SellerDashboardPage() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState(null);
   const [listings, setListings] = useState([]);
   const [analytics, setAnalytics] = useState({
@@ -18,7 +19,14 @@ export default function SellerDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Ensure component is mounted before accessing router
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     const getSellerData = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -30,9 +38,11 @@ export default function SellerDashboardPage() {
       setLoading(false);
     };
     getSellerData();
-  }, [router]);
+  }, [router, mounted]);
 
   const fetchSellerData = async (token) => {
+    if (!mounted) return;
+    
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
       
@@ -69,6 +79,8 @@ export default function SellerDashboardPage() {
   };
 
   const handleOptimizeListing = async (listingId) => {
+    if (!mounted) return;
+    
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
@@ -89,6 +101,17 @@ export default function SellerDashboardPage() {
       console.error('Optimization error:', error);
     }
   };
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (loading) {
     return (

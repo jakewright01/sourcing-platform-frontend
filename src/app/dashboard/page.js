@@ -6,12 +6,20 @@ import Link from 'next/link';
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState(null);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Ensure component is mounted before accessing router
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     const getUserAndRequests = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -36,14 +44,16 @@ export default function DashboardPage() {
       setLoading(false);
     };
     getUserAndRequests();
-  }, [router]);
+  }, [router, mounted]);
 
   const handleLogout = async () => {
+    if (!mounted) return;
     await supabase.auth.signOut();
     router.push('/');
   };
 
   const viewMatches = (requestId) => {
+    if (!mounted) return;
     router.push(`/requests/${requestId}`);
   };
 
@@ -59,6 +69,17 @@ export default function DashboardPage() {
         return 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300';
     }
   };
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (loading) {
     return (

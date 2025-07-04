@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function AddListingPage() {
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({ 
     item_name: '', 
     item_description: '', 
@@ -17,7 +18,14 @@ export default function AddListingPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // Ensure component is mounted before accessing router
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     const checkAdmin = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || session.user.id !== process.env.NEXT_PUBLIC_ADMIN_USER_ID) {
@@ -27,7 +35,7 @@ export default function AddListingPage() {
       }
     };
     checkAdmin();
-  }, [router]);
+  }, [router, mounted]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,6 +47,8 @@ export default function AddListingPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!mounted) return;
+    
     setIsSubmitting(true);
     setMessage('');
     setIsError(false);
@@ -77,6 +87,17 @@ export default function AddListingPage() {
       setIsSubmitting(false);
     }
   };
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (loading) {
     return (

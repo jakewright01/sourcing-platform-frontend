@@ -6,11 +6,19 @@ import Link from 'next/link';
 
 export default function AdminListingsPage() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
+  // Ensure component is mounted before accessing router
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const fetchAdminListings = async () => {
+    if (!mounted) return;
+    
     const { data: { session } } = await supabase.auth.getSession();
     if (!session || session.user.id !== process.env.NEXT_PUBLIC_ADMIN_USER_ID) {
       router.push('/login');
@@ -33,10 +41,14 @@ export default function AdminListingsPage() {
   };
 
   useEffect(() => {
-    fetchAdminListings();
-  }, []);
+    if (mounted) {
+      fetchAdminListings();
+    }
+  }, [mounted]);
 
   const handleDelete = async (listingId) => {
+    if (!mounted) return;
+    
     if (!confirm('Are you sure you want to delete this listing?')) return;
     const { data: { session } } = await supabase.auth.getSession();
     try {
@@ -51,6 +63,17 @@ export default function AdminListingsPage() {
       setError(err.message);
     }
   };
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (loading) {
     return (

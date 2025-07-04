@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 export default function EditListingPage({ params }) {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [listingId, setListingId] = useState(null);
   const [formData, setFormData] = useState({ 
     item_name: '', 
@@ -18,15 +19,20 @@ export default function EditListingPage({ params }) {
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
+  // Ensure component is mounted before accessing router
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Handle params in useEffect to avoid the workStore error
   useEffect(() => {
-    if (params?.id) {
+    if (mounted && params?.id) {
       setListingId(params.id);
     }
-  }, [params]);
+  }, [params, mounted]);
 
   useEffect(() => {
-    if (listingId) {
+    if (mounted && listingId) {
       const checkAdminAndFetchListing = async () => {
         setLoading(true);
         const { data: { session } } = await supabase.auth.getSession();
@@ -54,7 +60,7 @@ export default function EditListingPage({ params }) {
       };
       checkAdminAndFetchListing();
     }
-  }, [listingId, router]);
+  }, [listingId, router, mounted]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,6 +72,8 @@ export default function EditListingPage({ params }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!mounted) return;
+    
     setIsSubmitting(true);
     setMessage('Saving changes...');
     setIsError(false);
@@ -91,6 +99,17 @@ export default function EditListingPage({ params }) {
       setIsSubmitting(false);
     }
   };
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (loading) {
     return (
