@@ -91,7 +91,6 @@ class ApiClient {
     }
     
     return { success: true, data: [], message: 'Mock response' };
-    }
   }
 
   async get(endpoint, options = {}) {
