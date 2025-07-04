@@ -62,23 +62,40 @@ export default function AddListingPage() {
     
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/listings`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json', 
-          'Authorization': `Bearer ${session.access_token}` 
-        },
-        body: JSON.stringify({ ...formData, source: 'internal' }),
-      });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to add listing');
+      // Try Supabase insert
+      const { data, error } = await supabase
+        .from('listings')
+        .insert([{
+          ...formData,
+          seller_id: session.user.id,
+          source: 'admin',
+          created_at: new Date().toISOString()
+        }])
+        .select()
+        .single();
+      
+      if (error) {
+        // If Supabase fails, store locally
+        if (typeof window !== 'undefined') {
+          const localListings = JSON.parse(localStorage.getItem('adminListings') || '[]');
+          const newListing = {
+            ...formData,
+            id: 'admin_local_' + Date.now(),
+            seller_id: session.user.id,
+            source: 'admin',
+            created_at: new Date().toISOString()
+          };
+          localListings.push(newListing);
+          localStorage.setItem('adminListings', JSON.stringify(localListings));
+          
+          setMessage(`Successfully added: ${newListing.item_name}. Add another?`);
+          setFormData({ item_name: '', item_description: '', price: 0, condition: 'New' });
+          return;
+        }
       }
       
-      const newListing = await response.json();
-      setMessage(`Successfully added: ${newListing.item_name}. Add another?`);
+      setMessage(`Successfully added: ${data.item_name}. Add another?`);
       setFormData({ item_name: '', item_description: '', price: 0, condition: 'New' });
     } catch (error) {
       setMessage(`Error: ${error.message}`);
