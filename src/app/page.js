@@ -49,7 +49,6 @@ export default function HomePage() {
       } else if (!user) {
         // For anonymous users, just show success
         success = true;
-        }
       }
       
       if (success) {
