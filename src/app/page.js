@@ -59,13 +59,13 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-neutral-900/5 via-stone-900/5 to-amber-900/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-50 to-stone-50 dark:from-amber-900/20 dark:to-stone-900/20 text-amber-800 dark:text-amber-200 text-sm font-light tracking-wide mb-8 border border-amber-200/50 dark:border-amber-700/30">
-              <span className="w-2 h-2 bg-amber-500 rounded-full mr-3 animate-pulse"></span>
+            <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-stone-50 to-neutral-50 dark:from-stone-900/20 dark:to-neutral-900/20 text-stone-700 dark:text-stone-300 text-sm font-light tracking-wide mb-8 border border-stone-200/50 dark:border-stone-700/30">
+              <span className="w-2 h-2 bg-stone-500 rounded-full mr-3 animate-pulse"></span>
               Luxury Sourcing Concierge
             </div>
             
             <h1 className="text-5xl md:text-7xl luxury-heading mb-8">
-              <span className="text-luxury-gold">
+              <span className="text-luxury-bronze">
                 Curated
               </span>
               <br />
@@ -90,6 +90,7 @@ export default function HomePage() {
                     id="description"
                     placeholder="e.g., A vintage Hermès Kelly bag in black box leather, or a 1960s Rolex Submariner..."
                     className="w-full p-5 luxury-input dark:luxury-input-dark rounded-2xl text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all resize-none font-light"
+                    className="w-full p-5 luxury-input dark:luxury-input-dark rounded-2xl text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-stone-400 focus:border-stone-400 transition-all resize-none font-light"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={4}
@@ -108,6 +109,7 @@ export default function HomePage() {
                       id="budget"
                       placeholder="5,000"
                       className="w-full pl-10 pr-5 py-5 luxury-input dark:luxury-input-dark rounded-2xl text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all font-light"
+                      className="w-full pl-10 pr-5 py-5 luxury-input dark:luxury-input-dark rounded-2xl text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-stone-400 focus:border-stone-400 transition-all font-light"
                       value={budget}
                       onChange={(e) => setBudget(e.target.value)}
                     />
@@ -121,7 +123,7 @@ export default function HomePage() {
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-amber-400 rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-stone-400 rounded-full animate-spin"></div>
                       <span>Processing...</span>
                     </>
                   ) : (
@@ -165,7 +167,7 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center group">
-              <div className="w-16 h-16 bg-gradient-luxury-gold rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+              <div className="w-16 h-16 bg-gradient-luxury-bronze rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
@@ -176,7 +178,7 @@ export default function HomePage() {
 
             <div className="text-center group">
               <div className="w-16 h-16 bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
-                <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                <svg className="w-8 h-8 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -186,7 +188,7 @@ export default function HomePage() {
 
             <div className="text-center group">
               <div className="w-16 h-16 bg-gradient-to-br from-stone-600 to-stone-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
-                <svg className="w-8 h-8 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                <svg className="w-8 h-8 text-stone-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
@@ -202,7 +204,7 @@ export default function HomePage() {
         <section className="py-20">
           <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
             <div className="bg-gradient-luxury rounded-3xl p-12 text-white relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-stone-500/10"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-stone-500/10 to-neutral-500/10"></div>
               <div className="relative">
                 <h2 className="text-3xl md:text-4xl luxury-heading mb-6">
                   Begin Your Search

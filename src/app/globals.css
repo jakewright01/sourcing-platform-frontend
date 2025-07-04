@@ -6,17 +6,19 @@
   --primary: #000000;
   --primary-light: #333333;
   --secondary: #f8f8f8;
-  --accent: #d4af37;
-  --accent-light: #e6c866;
+  --accent: #c9a96e;
+  --accent-light: #d4b887;
+  --accent-dark: #8b7355;
   --success: #2d5016;
   --warning: #8b4513;
   --error: #8b0000;
   --border: #e8e8e8;
   --card: #ffffff;
   --muted: #666666;
-  --luxury-gold: #d4af37;
-  --luxury-rose: #e8b4b8;
+  --luxury-bronze: #c9a96e;
+  --luxury-cream: #f5f2ed;
   --luxury-charcoal: #2c2c2c;
+  --luxury-stone: #8a8a8a;
 }
 
 @theme inline {
@@ -33,17 +35,19 @@
     --primary: #ffffff;
     --primary-light: #cccccc;
     --secondary: #1a1a1a;
-    --accent: #d4af37;
-    --accent-light: #e6c866;
+    --accent: #c9a96e;
+    --accent-light: #d4b887;
+    --accent-dark: #8b7355;
     --success: #4a7c59;
     --warning: #d2691e;
     --error: #dc143c;
     --border: #2a2a2a;
     --card: #151515;
     --muted: #999999;
-    --luxury-gold: #d4af37;
-    --luxury-rose: #e8b4b8;
+    --luxury-bronze: #c9a96e;
+    --luxury-cream: #2a2a2a;
     --luxury-charcoal: #f5f5f5;
+    --luxury-stone: #666666;
   }
 }
 
@@ -78,7 +82,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--luxury-gold);
+  background: var(--luxury-bronze);
   border-radius: 2px;
 }
 
@@ -93,21 +97,21 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Focus styles */
 .focus-ring {
-  @apply focus:outline-none focus:ring-1 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black;
+  @apply focus:outline-none focus:ring-1 focus:ring-stone-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black;
 }
 
 /* Luxury glass morphism effect */
 .luxury-glass {
   backdrop-filter: blur(20px) saturate(180%);
   background-color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(201, 169, 110, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .luxury-glass-dark {
   backdrop-filter: blur(20px) saturate(180%);
   background-color: rgba(21, 21, 21, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(201, 169, 110, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
@@ -116,12 +120,12 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(135deg, #000000 0%, #2c2c2c 50%, #000000 100%);
 }
 
-.gradient-luxury-gold {
-  background: linear-gradient(135deg, #d4af37 0%, #e6c866 50%, #d4af37 100%);
+.gradient-luxury-bronze {
+  background: linear-gradient(135deg, #c9a96e 0%, #d4b887 50%, #c9a96e 100%);
 }
 
-.gradient-luxury-rose {
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8b4b8 50%, #f5f5f5 100%);
+.gradient-luxury-cream {
+  background: linear-gradient(135deg, #f5f2ed 0%, #ede8e0 50%, #f5f2ed 100%);
 }
 
 .gradient-luxury-subtle {
@@ -134,7 +138,7 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(201, 169, 110, 0.2);
 }
 
 .btn-luxury::before {
@@ -144,7 +148,7 @@ h1, h2, h3, h4, h5, h6 {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.15), transparent);
   transition: left 0.5s;
 }
 
@@ -160,24 +164,24 @@ h1, h2, h3, h4, h5, h6 {
 /* Luxury card effects */
 .card-luxury {
   transform: translateY(0);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(212, 175, 55, 0.1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(201, 169, 110, 0.1);
   background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
 }
 
 .card-luxury:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-color: rgba(212, 175, 55, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: rgba(201, 169, 110, 0.2);
 }
 
 .card-luxury-dark {
   background: linear-gradient(145deg, #151515 0%, #1a1a1a 100%);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(201, 169, 110, 0.15);
 }
 
 .card-luxury-dark:hover {
-  border-color: rgba(212, 175, 55, 0.4);
+  border-color: rgba(201, 169, 110, 0.3);
 }
 
 /* Loading animation */
@@ -211,8 +215,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Luxury text effects */
-.text-luxury-gold {
-  background: linear-gradient(135deg, #d4af37, #e6c866, #d4af37);
+.text-luxury-bronze {
+  background: linear-gradient(135deg, #c9a96e, #d4b887, #c9a96e);
   background-size: 200% 200%;
   background-clip: text;
   -webkit-background-clip: text;
@@ -232,7 +236,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Luxury dividers */
 .luxury-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--luxury-gold), transparent);
+  background: linear-gradient(90deg, transparent, var(--luxury-bronze), transparent);
 }
 
 /* Premium spacing */
@@ -255,28 +259,28 @@ h1, h2, h3, h4, h5, h6 {
 /* Luxury form elements */
 .luxury-input {
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(201, 169, 110, 0.15);
   backdrop-filter: blur(10px);
 }
 
 .luxury-input:focus {
-  border-color: var(--luxury-gold);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  border-color: var(--luxury-bronze);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
 }
 
 .luxury-input-dark {
   background: rgba(21, 21, 21, 0.9);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(201, 169, 110, 0.2);
 }
 
 /* Luxury status indicators */
 .status-luxury {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.08), rgba(201, 169, 110, 0.04));
+  border: 1px solid rgba(201, 169, 110, 0.2);
   color: #8b7355;
 }
 
 .status-luxury-dark {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
-  color: #d4af37;
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.15), rgba(201, 169, 110, 0.08));
+  color: #c9a96e;
 }
