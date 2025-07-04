@@ -31,28 +31,25 @@ export default function HomePage() {
     };
 
     try {
-      try {
-        const response = await apiClient.post('/requests', requestData);
-        setStatusMessage('Success! Your request has been submitted.');
-      } catch (apiError) {
-        console.log('API submission failed, storing locally...');
-        // Store request locally as fallback
-        const localRequests = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
-        localRequests.push({
-          ...requestData,
-          id: Date.now(),
-          timestamp: new Date().toISOString(),
-          status: 'pending_sync'
-        });
-        localStorage.setItem('pendingRequests', JSON.stringify(localRequests));
-        setStatusMessage('Request saved! We\'ll process it as soon as our servers are available.');
-      }
+      // Try API submission with fallback to local storage
+      const response = await apiClient.post('/requests', requestData);
+      setStatusMessage('Success! Your request has been submitted.');
 
       setDescription('');
       setBudget('');
     } catch (error) {
       console.error('Request submission error:', error);
-      setStatusMessage('Unable to submit request. Please try again later.');
+      
+      // Store request locally as fallback
+      const localRequests = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
+      localRequests.push({
+        ...requestData,
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        status: 'pending_sync'
+      });
+      localStorage.setItem('pendingRequests', JSON.stringify(localRequests));
+      setStatusMessage('Request saved! We\'ll process it as soon as our servers are available.');
     } finally {
       setIsSubmitting(false); 
     }

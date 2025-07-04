@@ -20,43 +20,19 @@ export default function LoginPage() {
     setIsError(false);
     
     try {
-      // Try API login first
-      let sessionData;
+      // Use Supabase auth directly for better reliability
+      const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       
-      try {
-        sessionData = await apiClient.post('/auth/login', { email, password });
-      } catch (apiError) {
-        console.log('API login failed, trying Supabase directly...');
-        throw apiError; // This will trigger the Supabase fallback below
-      }
+      if (supabaseError) throw supabaseError;
       
-      if (sessionData.access_token) {
-        const { error: sessionError } = await supabase.auth.setSession(sessionData);
-        if (sessionError) throw sessionError;
-        
-        setMessage('Login successful! Redirecting...');
-        router.push('/dashboard');
-      } else {
-        throw new Error('Invalid login response');
-      }
+      setMessage('Login successful! Redirecting...');
+      router.push('/dashboard');
     } catch (error) {
-      console.log('API login failed, trying Supabase auth...');
-      
-      // Fallback to Supabase auth
-      try {
-        const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        
-        if (supabaseError) throw supabaseError;
-        
-        setMessage('Login successful! Redirecting...');
-        router.push('/dashboard');
-      } catch (supabaseError) {
-        setMessage(supabaseError.message || 'Login failed. Please check your credentials.');
-        setIsError(true);
-      }
+      setMessage(error.message || 'Login failed. Please check your credentials.');
+      setIsError(true);
     } finally {
       setIsSubmitting(false);
     }
