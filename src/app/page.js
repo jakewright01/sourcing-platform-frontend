@@ -32,38 +32,73 @@ export default function HomePage() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/requests`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData),
-      });
-
-      if (response.ok) {
+      
+      // Try multiple submission methods
+      let success = false;
+      
+      // Method 1: Try your backend API
+      try {
+        const response = await fetch(`${apiUrl}/requests`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestData),
+        });
+        
+        if (response.ok) {
+          success = true;
+        } else {
+          throw new Error('Backend API not available');
+        }
+      } catch (apiError) {
+        console.log('Backend API failed, trying Supabase...');
+        
+        // Method 2: Try direct Supabase insertion
+        if (user) {
+          try {
+            const { data, error } = await supabase
+              .from('requests')
+              .insert([{
+                ...requestData,
+                buyer_id: user.id,
+                created_at: new Date().toISOString()
+              }])
+              .select();
+            
+            if (error) throw error;
+            success = true;
+          } catch (supabaseError) {
+            console.log('Supabase failed, using local storage...');
+          }
+        }
+      }
+      
+      if (success) {
         setStatusMessage('Success! Your request has been submitted.');
         setDescription('');
         setBudget('');
       } else {
-        throw new Error('Server error');
+        // Method 3: Store locally as fallback
+        if (typeof window !== 'undefined') {
+          const localRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
+          const newRequest = {
+            ...requestData,
+            id: 'local_' + Date.now(),
+            created_at: new Date().toISOString(),
+            status: 'pending_sync'
+          };
+          localRequests.push(newRequest);
+          localStorage.setItem('userRequests', JSON.stringify(localRequests));
+          
+          setStatusMessage('Request saved! We\'ll process it as soon as our servers are available.');
+          setDescription('');
+          setBudget('');
+        } else {
+          throw new Error('Unable to submit request');
+        }
       }
     } catch (error) {
       console.error('Request submission error:', error);
-      
-      // Fallback: Store request locally
-      if (typeof window !== 'undefined') {
-        const localRequests = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
-        localRequests.push({
-          ...requestData,
-          id: Date.now(),
-          timestamp: new Date().toISOString(),
-          status: 'pending_sync'
-        });
-        localStorage.setItem('pendingRequests', JSON.stringify(localRequests));
-        setStatusMessage('Request saved! We\'ll process it as soon as our servers are available.');
-        setDescription('');
-        setBudget('');
-      } else {
-        setStatusMessage('Error: Unable to submit request. Please try again.');
-      }
+      setStatusMessage('Error: Unable to submit request. Please try again.');
     } finally {
       setIsSubmitting(false); 
     }

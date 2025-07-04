@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
 import NavbarAuth from '../components/NavbarAuth';
-import OfflineIndicator from '../components/OfflineIndicator';
+import ConnectionStatus from '../components/ConnectionStatus';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -55,8 +55,8 @@ export default function RootLayout({ children }) {
       <body className={`${inter.variable} font-sans antialiased`}>
         <div className="min-h-screen bg-white dark:bg-gray-900">
           <Navbar />
+          <ConnectionStatus />
           {children}
-          <OfflineIndicator />
         </div>
       </body>
     </html>
