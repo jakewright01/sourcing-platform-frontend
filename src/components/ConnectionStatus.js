@@ -3,19 +3,7 @@
 import { useState, useEffect } from 'react';
 
 export default function ConnectionStatus() {
-  const [showDemo, setShowDemo] = useState(false);
-
-  useEffect(() => {
-    // Show demo indicator after a delay
-    const timer = setTimeout(() => {
-      setShowDemo(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!showDemo) return null;
-
+  // Don't check any APIs - just show demo mode
   return (
     <div className="fixed top-16 left-0 right-0 z-40">
       <div className="bg-blue-500 text-white px-4 py-2 text-center text-sm">
