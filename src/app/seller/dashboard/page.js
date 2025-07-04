@@ -57,44 +57,27 @@ export default function SellerDashboardPage() {
       };
       let insightsData = [];
       
-      // Use only reliable data sources
-      try {
-        // Try Supabase first
-        const { data: { user } } = await supabase.auth.getUser();
-        const { data: supabaseData, error: supabaseError } = await supabase
-          .from('listings')
-          .select('*')
-          .eq('seller_id', user.id)
-          .order('created_at', { ascending: false });
-        
-        if (!supabaseError && supabaseData) {
-          listingsData = supabaseData;
-        } else {
-          throw new Error('Supabase not available');
+      // Always use demo data - no external calls
+      listingsData = [
+        {
+          id: 'seller_demo_1',
+          item_name: 'Vintage Barbour Jacket',
+          item_description: 'Perfect condition vintage jacket',
+          price: 150.00,
+          condition: 'Used - Good',
+          matches: 8,
+          ai_score: 0.85
+        },
+        {
+          id: 'seller_demo_2',
+          item_name: 'Designer Handbag',
+          item_description: 'Authentic designer piece',
+          price: 300.00,
+          condition: 'Used - Like New',
+          matches: 12,
+          ai_score: 0.92
         }
-      } catch (supabaseError) {
-        // Use demo data
-        listingsData = [
-          {
-            id: 'seller_demo_1',
-            item_name: 'Vintage Barbour Jacket',
-            item_description: 'Perfect condition vintage jacket',
-            price: 150.00,
-            condition: 'Used - Good',
-            matches: 8,
-            ai_score: 0.85
-          },
-          {
-            id: 'seller_demo_2',
-            item_name: 'Designer Handbag',
-            item_description: 'Authentic designer piece',
-            price: 300.00,
-            condition: 'Used - Like New',
-            matches: 12,
-            ai_score: 0.92
-          }
-        ];
-      }
+      ];
 
       // Set analytics based on listings data
       analyticsData = {

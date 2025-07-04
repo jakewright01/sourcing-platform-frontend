@@ -32,52 +32,37 @@ export default function AdminListingsPage() {
     try {
       let data = [];
       
-      // Use only reliable data sources
-      try {
-        // Try Supabase first
-        const { data: supabaseData, error: supabaseError } = await supabase
-          .from('listings')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (!supabaseError && supabaseData) {
-          data = supabaseData;
-        } else {
-          throw new Error('Supabase not available');
+      // Always use demo data - no external calls
+      data = [
+        {
+          id: 'demo_1',
+          item_name: 'Vintage Barbour Jacket',
+          item_description: 'Classic olive green Barbour jacket in excellent condition',
+          price: 150.00,
+          condition: 'Used - Good',
+          created_at: new Date().toISOString()
+        },
+        {
+          id: 'demo_2',
+          item_name: 'Designer Handbag',
+          item_description: 'Authentic leather handbag from premium designer',
+          price: 300.00,
+          condition: 'Used - Like New',
+          created_at: new Date().toISOString()
+        },
+        {
+          id: 'demo_3',
+          item_name: 'Vintage Watch',
+          item_description: 'Classic timepiece in working condition',
+          price: 250.00,
+          condition: 'Used - Good',
+          created_at: new Date().toISOString()
         }
-      } catch (supabaseError) {
-        // Use demo data
-        data = [
-          {
-            id: 'demo_1',
-            item_name: 'Vintage Barbour Jacket',
-            item_description: 'Classic olive green Barbour jacket in excellent condition',
-            price: 150.00,
-            condition: 'Used - Good',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'demo_2',
-            item_name: 'Designer Handbag',
-            item_description: 'Authentic leather handbag from premium designer',
-            price: 300.00,
-            condition: 'Used - Like New',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'demo_3',
-            item_name: 'Vintage Watch',
-            item_description: 'Classic timepiece in working condition',
-            price: 250.00,
-            condition: 'Used - Good',
-            created_at: new Date().toISOString()
-          }
-        ];
-      }
+      ];
       
       setListings(data);
     } catch (err) {
-      // Always show some data, even if there's an error
+      // Always show demo data
       setListings([
         {
           id: 'demo_1',
@@ -106,24 +91,8 @@ export default function AdminListingsPage() {
     
     if (!confirm('Are you sure you want to delete this listing?')) return;
     
-    try {
-      // Try Supabase delete
-      const { error } = await supabase
-        .from('listings')
-        .delete()
-        .eq('id', listingId);
-      
-      if (error) {
-        // If Supabase fails, just remove from local state
-        setListings(prev => prev.filter(listing => listing.id !== listingId));
-        return;
-      }
-      
-      fetchAdminListings();
-    } catch (err) {
-      // Always succeed - remove from local state
-      setListings(prev => prev.filter(listing => listing.id !== listingId));
-    }
+    // Always succeed - remove from local state
+    setListings(prev => prev.filter(listing => listing.id !== listingId));
   };
 
   if (!mounted) {

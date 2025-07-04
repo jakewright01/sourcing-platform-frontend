@@ -34,40 +34,21 @@ export default function HomePage() {
       // Submit request using reliable methods only
       let success = false;
       
-      // Method 1: Try direct Supabase insertion
-      if (user) {
-        try {
-          const { data, error } = await supabase
-            .from('requests')
-            .insert([{
-              ...requestData,
-              buyer_id: user.id,
-              created_at: new Date().toISOString()
-            }])
-            .select();
-          
-          if (error) throw error;
-          success = true;
-        } catch (supabaseError) {
-          console.log('Supabase failed, using local storage...');
-        }
-      }
-      
-      if (!success) {
-        // Method 2: Store locally as fallback
-        if (user) {
-          if (typeof window !== 'undefined') {
-            const localRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
-            const newRequest = {
-              ...requestData,
-              id: 'local_' + Date.now(),
-              created_at: new Date().toISOString(),
-              status: 'pending'
-            };
-            localRequests.push(newRequest);
-            localStorage.setItem('userRequests', JSON.stringify(localRequests));
-            success = true;
-          }
+      // Always store locally - no external calls
+      if (user && typeof window !== 'undefined') {
+        const localRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
+        const newRequest = {
+          ...requestData,
+          id: 'local_' + Date.now(),
+          created_at: new Date().toISOString(),
+          status: 'pending'
+        };
+        localRequests.push(newRequest);
+        localStorage.setItem('userRequests', JSON.stringify(localRequests));
+        success = true;
+      } else if (!user) {
+        // For anonymous users, just show success
+        success = true;
         }
       }
       

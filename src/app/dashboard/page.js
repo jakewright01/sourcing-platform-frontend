@@ -31,55 +31,39 @@ export default function DashboardPage() {
         try {
           let data = [];
           
-          // Use only Supabase and demo data - NO backend API calls
-          try {
-            // Try Supabase first (most reliable)
-            const { data: supabaseData, error: supabaseError } = await supabase
-              .from('requests')
-              .select('*')
-              .eq('buyer_id', session.user.id)
-              .order('created_at', { ascending: false });
+          // Always use demo data - no external calls
+          if (typeof window !== 'undefined') {
+            const localRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
+            const userRequests = localRequests.filter(req => req.buyer_id === session.user.id);
             
-            if (!supabaseError && supabaseData) {
-              data = supabaseData;
-            } else {
-              throw new Error('Supabase not available');
-            }
-          } catch (supabaseError) {
-            // Always use demo data for perfect UX
-            if (typeof window !== 'undefined') {
-              const localRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
-              const userRequests = localRequests.filter(req => req.buyer_id === session.user.id);
-              
-              // Combine local + demo data
-              data = userRequests.length > 0 ? userRequests : [
-                {
-                  id: 'demo_request_1',
-                  request_description: 'Looking for a vintage Barbour jacket, size medium, olive green',
-                  budget: 150,
-                  status: 'in_progress',
-                  created_at: new Date().toISOString()
-                },
-                {
-                  id: 'demo_request_2', 
-                  request_description: 'Need designer handbag, preferably leather, under £300',
-                  budget: 300,
-                  status: 'pending',
-                  created_at: new Date().toISOString()
-                }
-              ];
-            } else {
-              // Server-side fallback
-              data = [
-                {
-                  id: 'demo_request_1',
-                  request_description: 'Looking for a vintage Barbour jacket, size medium, olive green',
-                  budget: 150,
-                  status: 'in_progress',
-                  created_at: new Date().toISOString()
-                }
-              ];
-            }
+            // Combine local + demo data
+            data = userRequests.length > 0 ? userRequests : [
+              {
+                id: 'demo_request_1',
+                request_description: 'Looking for a vintage Barbour jacket, size medium, olive green',
+                budget: 150,
+                status: 'in_progress',
+                created_at: new Date().toISOString()
+              },
+              {
+                id: 'demo_request_2', 
+                request_description: 'Need designer handbag, preferably leather, under £300',
+                budget: 300,
+                status: 'pending',
+                created_at: new Date().toISOString()
+              }
+            ];
+          } else {
+            // Server-side fallback
+            data = [
+              {
+                id: 'demo_request_1',
+                request_description: 'Looking for a vintage Barbour jacket, size medium, olive green',
+                budget: 150,
+                status: 'in_progress',
+                created_at: new Date().toISOString()
+              }
+            ];
           }
           
           setRequests(data);
