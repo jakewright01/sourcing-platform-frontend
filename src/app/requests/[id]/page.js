@@ -65,11 +65,17 @@ function MatchList({ matches }) {
 
 export default function RequestResultsPage({ params }) {
   const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [requestId, setRequestId] = useState(null);
   const router = useRouter();
+
+  // Ensure component is mounted before accessing router
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Ensure component is mounted before accessing router
   useEffect(() => {
@@ -131,6 +137,17 @@ export default function RequestResultsPage({ params }) {
     
     return <MatchList matches={matches} />;
   };
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (!mounted) {
     return (
