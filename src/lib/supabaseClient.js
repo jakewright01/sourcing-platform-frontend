@@ -4,16 +4,20 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // Check if environment variables are properly configured
-if (!supabaseUrl || !supabaseAnonKey || 
-    supabaseUrl.includes('placeholder') || 
-    supabaseAnonKey.includes('placeholder') ||
-    supabaseUrl === 'your-supabase-url' ||
-    supabaseAnonKey === 'your-supabase-anon-key') {
-  
+const isValidConfig = supabaseUrl && 
+                     supabaseAnonKey && 
+                     !supabaseUrl.includes('placeholder') && 
+                     !supabaseAnonKey.includes('placeholder') &&
+                     supabaseUrl !== 'your-supabase-url' &&
+                     supabaseAnonKey !== 'your-supabase-anon-key';
+
+let supabase;
+
+if (!isValidConfig) {
   console.warn('Supabase environment variables are not properly configured. Using demo mode.');
   
   // Create a safe demo client that won't cause build errors
-  export const supabase = {
+  supabase = {
     auth: {
       signInWithPassword: async () => {
         throw new Error('Demo mode: Please configure Supabase credentials');
@@ -49,5 +53,7 @@ if (!supabaseUrl || !supabaseAnonKey ||
   };
 } else {
   // Create real Supabase client
-  export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  supabase = createClient(supabaseUrl, supabaseAnonKey);
 }
+
+export { supabase };
