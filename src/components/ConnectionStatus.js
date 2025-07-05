@@ -3,7 +3,25 @@
 import { useState, useEffect } from 'react';
 
 export default function ConnectionStatus() {
-  // Don't check any APIs - just show demo mode
+  const [showStatus, setShowStatus] = useState(false);
+
+  useEffect(() => {
+    // Check if we're in demo mode
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    const isDemoMode = !supabaseUrl || 
+                      !supabaseAnonKey || 
+                      supabaseUrl.includes('placeholder') || 
+                      supabaseAnonKey.includes('placeholder') ||
+                      supabaseUrl === 'your-supabase-url' ||
+                      supabaseAnonKey === 'your-supabase-anon-key';
+    
+    setShowStatus(isDemoMode);
+  }, []);
+
+  if (!showStatus) return null;
+
   return (
     <div className="fixed top-16 left-0 right-0 z-40">
       <div className="bg-blue-500 text-white px-4 py-2 text-center text-sm">
